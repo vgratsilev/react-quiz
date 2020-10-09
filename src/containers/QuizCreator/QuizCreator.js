@@ -68,7 +68,7 @@ e
 				{ text: option3.value, id: option3.id },
 				{ text: option4.value, id: option4.id },
 			]
-		}
+		};
 
 		quiz.push(questionItem);
 
@@ -80,10 +80,26 @@ e
 		})
 	}
 
-	createQuizHandler = (event) => {
+	createQuizHandler = async (event) => {
 		event.preventDefault();
-		console.log(this.state.quiz);
-		// TODO Server
+
+		try{
+			await fetch('https://react-quiz-202fc.firebaseio.com/Quizes.json', {
+				method: "POST",
+				body: JSON.stringify({
+					body: this.state.quiz
+				})
+			});
+
+			this.setState({
+				quiz: [],
+				isFormValid: false,
+				rightAnswerID: 1,
+				formControls: createFormControls()
+			});
+		} catch (e) {
+			console.log(e);
+		}
 	}
 
 	changeHandler = (value, controlName) => {

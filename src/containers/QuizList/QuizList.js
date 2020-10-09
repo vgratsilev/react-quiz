@@ -18,6 +18,12 @@ export default class QuizList extends Component {
 		});
 	}
 
+	componentDidMount() {
+		fetch('https://react-quiz-202fc.firebaseio.com/quiz.json')
+			.then(response => response.json())
+			.then(json => console.log(json))
+	}
+
 	render() {
 		return (
 			<div className={classes.QuizList}>
