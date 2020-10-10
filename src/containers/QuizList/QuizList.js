@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import classes from './QuizList.module.scss'
 import {NavLink} from 'react-router-dom';
+import Loader from '../../components/UI/Loader/Loader';
 
 export default class QuizList extends Component {
 
 	state = {
-		quizes: []
+		quizes: [],
+		loading: true
 	}
 
 	renderQuizes() {
@@ -32,10 +34,13 @@ export default class QuizList extends Component {
 				Object.keys(json).forEach((key, index) => {
 					quizes.push({
 						id: key,
-						name: `Test №${index+1}`
+						name: `Test №${index + 1}`
 					});
 				});
-				this.setState({quizes});
+				this.setState({
+					quizes,
+					loading: false
+				});
 			} else {
 				console.log(`Error ${response.status}`);
 			}
@@ -51,9 +56,13 @@ export default class QuizList extends Component {
 				<div>
 					<h1>Quiz List</h1>
 
-					<ul>
-						{this.renderQuizes()}
-					</ul>
+					{this.state.loading
+						? <Loader/>
+						:
+						<ul>
+							{this.renderQuizes()}
+						</ul>
+					}
 				</div>
 			</div>
 		)
