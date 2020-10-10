@@ -8,7 +8,7 @@ import {
 } from '../../form/formFramework';
 import Input from '../../components/UI/Input/Input';
 import Select from '../../components/UI/Select/Select';
-import axios from 'axios';
+import axios from '../../axios/axios-quiz';
 
 function createOptionControl(number) {
 	return createControl({
@@ -85,7 +85,7 @@ e
 		event.preventDefault();
 
 		try{
-			await axios.post('https://react-quiz-202fc.firebaseio.com/Quizes.json', this.state.quiz);
+			await axios.post('Quizes.json', this.state.quiz);
 
 			this.setState({
 				quiz: [],
