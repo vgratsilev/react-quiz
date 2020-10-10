@@ -4,24 +4,45 @@ import {NavLink} from 'react-router-dom';
 
 export default class QuizList extends Component {
 
+	state = {
+		quizes: []
+	}
+
 	renderQuizes() {
-		return [1,2,3].map((quiz, index) => {
-			return(
-				<li key={index}>
+		return this.state.quizes.map((quiz) => {
+			return (
+				<li key={quiz.id}>
 					<NavLink
-						to={'/quiz/' + quiz}
+						to={'/quiz/' + quiz.id}
 					>
-						Test {quiz}
+						{quiz.name}
 					</NavLink>
 				</li>
 			)
 		});
 	}
 
-	componentDidMount() {
-		fetch('https://react-quiz-202fc.firebaseio.com/quiz.json')
-			.then(response => response.json())
-			.then(json => console.log(json))
+	async componentDidMount() {
+		try {
+			const response = await fetch('https://react-quiz-202fc.firebaseio.com/Quizes.json');
+			if (response.ok) {
+				const json = await response.json();
+
+				const quizes = [];
+				Object.keys(json).forEach((key, index) => {
+					quizes.push({
+						id: key,
+						name: `Test №${index+1}`
+					});
+				});
+				this.setState({quizes});
+			} else {
+				console.log(`Error ${response.status}`);
+			}
+
+		} catch (e) {
+			console.log(e);
+		}
 	}
 
 	render() {
