@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import classes from './QuizList.module.scss'
 import {NavLink} from 'react-router-dom';
 import Loader from '../../components/UI/Loader/Loader';
+import axios from 'axios';
 
 export default class QuizList extends Component {
 
@@ -26,25 +27,18 @@ export default class QuizList extends Component {
 
 	async componentDidMount() {
 		try {
-			const response = await fetch('https://react-quiz-202fc.firebaseio.com/Quizes.json');
-			if (response.ok) {
-				const json = await response.json();
-
-				const quizes = [];
-				Object.keys(json).forEach((key, index) => {
-					quizes.push({
-						id: key,
-						name: `Test №${index + 1}`
-					});
+			const response = await axios.get('https://react-quiz-202fc.firebaseio.com/Quizes.json');
+			const quizes = [];
+			Object.keys(response.data).forEach((key, index) => {
+				quizes.push({
+					id: key,
+					name: `Test №${index + 1}`
 				});
-				this.setState({
-					quizes,
-					loading: false
-				});
-			} else {
-				console.log(`Error ${response.status}`);
-			}
-
+			});
+			this.setState({
+				quizes,
+				loading: false
+			});
 		} catch (e) {
 			console.log(e);
 		}
