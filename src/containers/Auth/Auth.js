@@ -45,7 +45,7 @@ export default class Auth extends Component {
         };
 
         try {
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBnRT5i2DddIF1ean8wEoX1HoGYX2CByaw', authData);
+            const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_KEY}`, authData);
             console.log(response.data);
         } catch (e) {
             console.log(e);
@@ -60,7 +60,7 @@ export default class Auth extends Component {
         };
 
         try {
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBnRT5i2DddIF1ean8wEoX1HoGYX2CByaw', authData);
+            const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`, authData);
             console.log(response.data);
         } catch (e) {
             console.log(e);
