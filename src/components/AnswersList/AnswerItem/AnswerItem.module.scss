@@ -12,11 +12,9 @@
     &.error {
         background: rgba(240, 87, 108, .7);
     }
+
+    &:hover:not(.success):not(.error) {
+        background: rgba(255, 255, 255, .2);
+        transition: background .3s ease-in-out;
+    }
 }
-
-.AnswerItem:hover:not(.success):not(.error) {
-    background: rgba(255, 255, 255, .2);
-    transition: background .3s ease-in-out;
-}
-
-
