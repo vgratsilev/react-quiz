@@ -1,9 +1,15 @@
-import { LOAD_QUIZES_ERROR, LOAD_QUIZES_START, LOAD_QUIZES_SUCCESS } from '../actions/actionTypes';
+import { LOAD_QUIZ_SUCCESS, LOAD_QUIZES_ERROR, LOAD_QUIZES_START, LOAD_QUIZES_SUCCESS } from '../actions/actionTypes';
 
 const initialState = {
     quizes: [],
     loading: false,
-    error: null
+    error: null,
+
+    results: {},		// { [id]: 'success'/'error' }
+    isFinished: false,
+    activeQuestion: 0,
+    answerState: null,	// { [id]: 'success'/'error' }
+    quiz: null
 };
 
 export default function quizReducer(state = initialState, action) {
@@ -24,6 +30,12 @@ export default function quizReducer(state = initialState, action) {
                 ...state,
                 loading: false,
                 error: action.error
+            }
+        case LOAD_QUIZ_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                quiz: action.quiz
             }
         default:
             return state;
