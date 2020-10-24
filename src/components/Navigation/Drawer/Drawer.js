@@ -41,8 +41,6 @@ class Drawer extends Component {
             exact: true
         }];
 
-        console.log('Auth', this.props.isAuthenticated);
-
         if (this.props.isAuthenticated) {
             links.push({
                 to: '/quiz-creator',
