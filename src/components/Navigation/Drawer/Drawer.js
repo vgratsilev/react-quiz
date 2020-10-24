@@ -1,25 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import classes from './Drawer.module.scss';
 import BackDrop from '../../UI/Backdrop/Backdrop';
-import {NavLink} from 'react-router-dom'
-
-const links = [
-    {
-        to: '/',
-        label: 'List',
-        exact: true
-    },
-    {
-        to: '/auth',
-        label: 'Authorization',
-        exact: false
-    },
-    {
-        to: '/quiz-creator',
-        label: 'Create Quiz',
-        exact: false
-    }
-];
+import { NavLink } from 'react-router-dom'
 
 class Drawer extends Component {
 
@@ -27,7 +9,7 @@ class Drawer extends Component {
         this.props.onClose();
     }
 
-    renderLinks() {
+    renderLinks(links) {
         return links.map((link, index) => {
             return (
                 <li key={index}>
@@ -53,13 +35,40 @@ class Drawer extends Component {
             cls.push(classes.close)
         }
 
+        const links = [{
+            to: '/',
+            label: 'List',
+            exact: true
+        }];
+
+        console.log('Auth', this.props.isAuthenticated);
+
+        if (this.props.isAuthenticated) {
+            links.push({
+                to: '/quiz-creator',
+                label: 'Create Quiz',
+                exact: false
+            });
+            links.push({
+                to: '/logout',
+                label: 'Logout',
+                exact: false
+            });
+        } else {
+            links.unshift({
+                to: '/auth',
+                label: 'Authorization',
+                exact: false
+            });
+        }
+
         return (
             <>
                 <nav
                     className={cls.join(' ')}
                 >
                     <ul>
-                        {this.renderLinks()}
+                        {this.renderLinks(links)}
                     </ul>
                 </nav>
                 {this.props.isOpen &&

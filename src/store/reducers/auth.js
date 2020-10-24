@@ -12,10 +12,7 @@ export default function authReducer(state = initialState, action) {
                 token: action.token
             }
         case AUTH_LOGOUT:
-            localStorage.removeItem('token');
-            localStorage.removeItem('userID');
-            localStorage.removeItem('expirationDate');
-            return {
+             return {
                 ...state,
                 token: null
             }
