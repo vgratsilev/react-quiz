@@ -1,60 +1,71 @@
 import React, { Component } from 'react';
-import classes from './QuizList.module.scss'
 import { NavLink } from 'react-router-dom';
-import Loader from '../../components/UI/Loader/Loader';
 import { connect } from 'react-redux';
-import { loadQuizes } from '../../store/actions/quiz';
+import PropTypes from 'prop-types';
+import Loader from 'components/UI/Loader/Loader';
+import { loadQuizes } from 'store/actions/quiz';
+import classes from './QuizList.module.scss';
 
 class QuizList extends Component {
-
     renderQuizes() {
-        return this.props.quizes.map((quiz) => {
+        const { quizes } = this.props;
+
+        return quizes.map((quiz) => {
             return (
                 <li key={quiz.id}>
-                    <NavLink
-                        to={'/quiz/' + quiz.id}
-                    >
-                        {quiz.name}
-                    </NavLink>
+                    <NavLink to={`/quiz/${quiz.id}`}>{quiz.name}</NavLink>
                 </li>
-            )
+            );
         });
     }
 
     componentDidMount() {
-        this.props.loadQuizes();
+        const { loadQuizList } = this.props;
+        loadQuizList();
     }
 
     render() {
+        const { loading, quizes } = this.props;
         return (
             <div className={classes.QuizList}>
                 <div>
                     <h1>Quiz List</h1>
 
-                    {this.props.loading && this.props.quizes.length !== 0
-                        ? <Loader/>
-                        :
-                        <ul>
-                            {this.renderQuizes()}
-                        </ul>
-                    }
+                    {loading && quizes.length !== 0 ? <Loader /> : <ul>{this.renderQuizes()}</ul>}
                 </div>
             </div>
-        )
+        );
     }
 }
+
+QuizList.propTypes = {
+    loadQuizList: PropTypes.func,
+    loading: PropTypes.bool,
+    quizes: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string,
+            name: PropTypes.string
+        })
+    )
+};
+
+QuizList.defaultProps = {
+    loadQuizList: null,
+    loading: true,
+    quizes: null
+};
 
 function mapSTateToProps(state) {
     return {
         quizes: state.quiz.quizes,
         loading: state.quiz.loading
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        loadQuizes: () => dispatch(loadQuizes())
-    }
+        loadQuizList: () => dispatch(loadQuizes())
+    };
 }
 
 export default connect(mapSTateToProps, mapDispatchToProps)(QuizList);

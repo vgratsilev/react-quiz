@@ -10,7 +10,7 @@
     background: #fff;
     z-index: 90;
     transform: translateX(0px);
-    transition: transform .22s ease-in;
+    transition: transform 0.22s ease-in;
 
     &.close {
         transform: translateX(-300px);
@@ -31,9 +31,10 @@
                 background-color: #fff;
                 position: relative;
                 padding: 0 20px 10px 20px;
-                transition: opacity .3s;
+                transition: opacity 0.3s;
 
-                &:hover, .active {
+                &:hover,
+                .active {
                     opacity: 70%;
                 }
             }

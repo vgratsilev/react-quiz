@@ -1,50 +1,95 @@
 import React, { Component } from 'react';
-import classes from './Quiz.module.scss';
-import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz';
-import FinishedQuiz from '../../components/FinishedQiuz/FinishedQiuz';
-import Loader from '../../components/UI/Loader/Loader';
 import { connect } from 'react-redux';
-import { loadQuizByID, quizAnswerClick, quizRetry } from '../../store/actions/quiz';
+import PropTypes from 'prop-types';
+import ActiveQuiz from 'components/ActiveQuiz/ActiveQuiz';
+import FinishedQuiz from 'components/FinishedQiuz/FinishedQiuz';
+import Loader from 'components/UI/Loader/Loader';
+import { loadQuizByID, quizAnswerClick, quizRetry } from 'store/actions/quiz';
+import classes from './Quiz.module.scss';
 
 class Quiz extends Component {
-
     componentDidMount() {
-        this.props.loadQuizByID(this.props.match.params.id)
+        const { loadQuiz, match } = this.props;
+        const { id } = match.params;
+        loadQuiz(id);
     }
 
     componentWillUnmount() {
-        this.props.quizRetry();
+        const { retryQuiz } = this.props;
+        retryQuiz();
     }
 
     render() {
+        const { loading, quiz, isFinished, results, retryQuiz, activeQuestion, quizAnswerClickHandler, answerState } = this.props;
+
+        const showLoader = loading || !quiz.length > 0;
         return (
             <div className={classes.Quiz}>
                 <div className={classes.QuizWrapper}>
                     <h1>Answer the questions:</h1>
 
-                    {this.props.loading || !this.props.quiz.length > 0
-                        ? <Loader/>
-                        : this.props.isFinished ?
-                            <FinishedQuiz
-                                results={this.props.results}
-                                quiz={this.props.quiz}
-                                onRetry={this.props.quizRetry}
-                            />
-                            :
-                            < ActiveQuiz
-                                answers={this.props.quiz[this.props.activeQuestion].answers}
-                                question={this.props.quiz[this.props.activeQuestion].question}
-                                onAnswerClick={this.props.quizAnswerClick}
-                                quizLength={this.props.quiz.length}
-                                answerNumber={this.props.activeQuestion + 1}
-                                state={this.props.answerState}
-                            />
-                    }
+                    {showLoader && <Loader />}
+                    {!showLoader && isFinished && <FinishedQuiz results={results} quiz={quiz} onRetry={retryQuiz} />}
+                    {!showLoader && !isFinished && (
+                        <ActiveQuiz
+                            answers={quiz[activeQuestion]?.answers}
+                            question={quiz[activeQuestion]?.question}
+                            onAnswerClick={quizAnswerClickHandler}
+                            quizLength={quiz.length}
+                            answerNumber={activeQuestion + 1}
+                            state={answerState}
+                        />
+                    )}
                 </div>
             </div>
         );
     }
 }
+
+Quiz.propTypes = {
+    loadQuiz: PropTypes.func,
+    retryQuiz: PropTypes.func,
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            id: PropTypes.node
+        }).isRequired
+    }).isRequired,
+    loading: PropTypes.bool,
+    isFinished: PropTypes.bool,
+    quiz: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number,
+            question: PropTypes.string,
+            rightAnswerID: PropTypes.number,
+            answers: PropTypes.arrayOf(
+                PropTypes.shape({
+                    id: PropTypes.number,
+                    text: PropTypes.string
+                })
+            )
+        })
+    ),
+    results: PropTypes.shape({
+        id: PropTypes.string
+    }),
+    activeQuestion: PropTypes.number,
+    quizAnswerClickHandler: PropTypes.func,
+    answerState: PropTypes.shape({
+        id: PropTypes.string
+    })
+};
+
+Quiz.defaultProps = {
+    loadQuiz: null,
+    retryQuiz: null,
+    loading: true,
+    isFinished: false,
+    quiz: [],
+    results: null,
+    activeQuestion: 0,
+    quizAnswerClickHandler: null,
+    answerState: null
+};
 
 function mapStateToProps(state) {
     return {
@@ -54,15 +99,15 @@ function mapStateToProps(state) {
         answerState: state.quiz.answerState,
         quiz: state.quiz.quiz,
         loading: state.quiz.loading
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        loadQuizByID: (ID) => dispatch(loadQuizByID(ID)),
-        quizAnswerClick: (answerID) => dispatch(quizAnswerClick(answerID)),
-        quizRetry: () => dispatch(quizRetry())
-    }
+        loadQuiz: (ID) => dispatch(loadQuizByID(ID)),
+        quizAnswerClickHandler: (answerID) => dispatch(quizAnswerClick(answerID)),
+        retryQuiz: () => dispatch(quizRetry())
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Quiz);

@@ -1,47 +1,45 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import BackDrop from 'components/UI/Backdrop/Backdrop';
 import classes from './Drawer.module.scss';
-import BackDrop from '../../UI/Backdrop/Backdrop';
-import { NavLink } from 'react-router-dom'
 
 class Drawer extends Component {
-
     clickHandler = () => {
-        this.props.onClose();
-    }
+        const { onClose } = this.props;
+        onClose();
+    };
 
     renderLinks(links) {
         return links.map((link, index) => {
             return (
+                // eslint-disable-next-line react/no-array-index-key
                 <li key={index}>
-                    <NavLink
-                        to={link.to}
-                        exact={link.exact}
-                        activeClassName={classes.active}
-                        onClick={this.clickHandler}
-                    >
+                    <NavLink to={link.to} exact={link.exact} activeClassName={classes.active} onClick={this.clickHandler}>
                         {link.label}
                     </NavLink>
                 </li>
-            )
+            );
         });
     }
 
     render() {
-        const cls = [
-            classes.Drawer
-        ];
+        const cls = [classes.Drawer];
+        const { isOpen, isAuthenticated, onClose } = this.props;
 
-        if (!this.props.isOpen) {
-            cls.push(classes.close)
+        if (!isOpen) {
+            cls.push(classes.close);
         }
 
-        const links = [{
-            to: '/',
-            label: 'List',
-            exact: true
-        }];
+        const links = [
+            {
+                to: '/',
+                label: 'List',
+                exact: true
+            }
+        ];
 
-        if (this.props.isAuthenticated) {
+        if (isAuthenticated) {
             links.push({
                 to: '/quiz-creator',
                 label: 'Create Quiz',
@@ -62,19 +60,25 @@ class Drawer extends Component {
 
         return (
             <>
-                <nav
-                    className={cls.join(' ')}
-                >
-                    <ul>
-                        {this.renderLinks(links)}
-                    </ul>
+                <nav className={cls.join(' ')}>
+                    <ul>{this.renderLinks(links)}</ul>
                 </nav>
-                {this.props.isOpen &&
-                <BackDrop onClick={this.props.onClose}/>
-                }
+                {isOpen && <BackDrop onClick={onClose} />}
             </>
-        )
+        );
     }
 }
+
+Drawer.propTypes = {
+    isAuthenticated: PropTypes.bool,
+    isOpen: PropTypes.bool,
+    onClose: PropTypes.func
+};
+
+Drawer.defaultProps = {
+    isAuthenticated: false,
+    isOpen: false,
+    onClose: null
+};
 
 export default Drawer;

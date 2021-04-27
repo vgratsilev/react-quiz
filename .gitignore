@@ -3,9 +3,6 @@
 # WebStorm
 .idea
 
-# api keys
-.env
-
 # firebase
 .firebase
 
