@@ -7,9 +7,8 @@ jobs:
   build_and_preview:
     runs-on: ubuntu-latest
     steps:
-      run: |
-        git config --global core.autocrlf true
-        git config --global core.eol crlf
+      - run: git config --global core.autocrlf true
+      - run: git config --global core.eol crlf
       - uses: actions/checkout@v2
       - run: npm i yarn
       - run: yarn install
